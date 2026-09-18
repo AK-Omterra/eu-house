@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Standardization & Technical Regulation Towers</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --navy-light:#3A5D93;
+    --navy-dark:#152747;
+
+    --t1:#C4CACF;
+    --t2:#9FA6AC;
+    --t3:#7A8188;
+    --t-ledge:rgba(0,0,0,.22);
+
+    --glass-a:#B8E0F7;
+    --glass-b:#4B91C2;
+    --glass-frame:#173B5B;
+
+    --green:#2E7D46;
+    --green-hover:#256B3B;
+    --grass:#5FA85A;
+    --grass-dark:#4A8A46;
+    --path:#D9CFB8;
+
+    --win-w:84px;
+    --win-h:58px;
+    --tower-slot:320px;
+    --tower-gap:150px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    padding:70px 20px 40px;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:linear-gradient(#cfe3f2,#eef4f9 45%);
+    color:#1a1a1a;
+    overflow-x:clip;
+  }
+
+  .scene{ max-width:1040px; margin:0 auto; position:relative; }
+
+  .tower-name{
+    background:var(--navy);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-align:center;
+    padding:5px 10px;
+    border-radius:4px;
+    white-space:nowrap;
+    margin-bottom:8px;
+    box-shadow:0 3px 6px rgba(0,0,0,.25);
+  }
+
+  .towers-row{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:var(--tower-gap);
+    position:relative;
+  }
+
+  .tower-col{
+    width:var(--tower-slot);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .antenna{ width:2px; height:30px; background:#333; }
+  .antenna-ball{ width:8px; height:8px; border-radius:50%; background:#C0392B; margin-bottom:-2px; }
+  .spire-triangle{ width:0; height:0; border-left:15px solid transparent; border-right:15px solid transparent; border-bottom:38px solid var(--t3); }
+
+  .tier{
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+  }
+  .tier::before{ content:""; position:absolute; top:0; left:0; right:0; height:4px; background:var(--t-ledge); }
+  .tier.t1{ background:var(--t1); }
+  .tier.t2{ background:var(--t2); }
+  .tier.t3{ background:var(--t3); }
+
+  .window-grid{ display:grid; gap:7px; }
+  .cols-3{ grid-template-columns:repeat(3, var(--win-w)); }
+  .cols-2{ grid-template-columns:repeat(2, var(--win-w)); }
+  .cols-1{ grid-template-columns:var(--win-w); }
+
+  .window{
+    position:relative;
+    width:var(--win-w);
+    height:var(--win-h);
+    border:2px solid var(--glass-frame);
+    border-radius:2px;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .window-header{ height:16%; background:var(--glass-frame); }
+  .window-body{
+    flex:1;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:2px 3px;
+    background:linear-gradient(160deg, var(--glass-a), var(--glass-b));
+    overflow:hidden;
+  }
+  .window-body::before{
+    content:"";
+    position:absolute; top:0; bottom:0; left:50%;
+    width:1.5px;
+    background:rgba(0,0,0,.18);
+  }
+  .window-body::after{
+    content:"";
+    position:absolute; top:-20%; left:-30%;
+    width:60%; height:160%;
+    background:rgba(255,255,255,.32);
+    transform:rotate(20deg);
+    pointer-events:none;
+  }
+  .window-label{
+    position:relative;
+    z-index:2;
+    font-size:10.5px;
+    line-height:1.08;
+    font-weight:700;
+    color:#12222E;
+    text-align:center;
+    text-shadow:0 1px 1px rgba(255,255,255,.35);
+  }
+  .window:hover{
+    transform:translateY(-5px) scale(1.07);
+    box-shadow:0 10px 18px rgba(0,0,0,.3);
+    z-index:4;
+  }
+
+  .blank-cap{
+    width:var(--win-w);
+    height:calc(2 * var(--win-h) + 7px);
+    border:2px solid var(--glass-frame);
+    border-radius:2px;
+    background:repeating-linear-gradient(135deg, var(--glass-b) 0px, var(--glass-b) 9px, var(--glass-a) 9px, var(--glass-a) 18px);
+  }
+
+  .tooltip{
+    position:absolute; bottom:105%; left:50%;
+    transform:translateX(-50%) translateY(4px);
+    background:var(--navy-dark);
+    color:#fff;
+    font-size:12px;
+    font-weight:400;
+    padding:6px 10px;
+    border-radius:6px;
+    white-space:nowrap;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:5;
+  }
+  .window:hover .tooltip{ opacity:1; transform:translateX(-50%) translateY(-2px); }
+
+  .step-strip{ height:10px; background:var(--t-ledge); width:100%; }
+
+  /* ---------- GROUND-FLOOR LOBBY (widest part of the tower) ---------- */
+  .lobby{
+    width:100%;
+    background:var(--t1);
+    padding:10px 0 0;
+    border-radius:3px 3px 0 0;
+    position:relative;
+    box-shadow:0 -3px 0 var(--t-ledge) inset;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .canopy{ position:absolute; top:0; left:0; right:0; height:6px; background:var(--navy); }
+  .lobby-glass{ display:flex; align-items:stretch; gap:8px; padding-top:10px; }
+  .lobby-panel{
+    width:60px;
+    background:linear-gradient(160deg, var(--glass-a), var(--glass-b));
+    border:2px solid var(--glass-frame);
+  }
+  .door{
+    width:96px;
+    height:70px;
+    display:flex;
+    border:2px solid var(--glass-frame);
+    overflow:hidden;
+    background:var(--glass-frame);
+  }
+  .door-panel{
+    flex:1;
+    background:linear-gradient(180deg, var(--glass-a), var(--glass-b));
+    position:relative;
+    border-left:1.5px solid var(--glass-frame);
+  }
+  .door-panel:first-child{ border-left:none; }
+  .door-handle{ position:absolute; top:50%; width:3px; height:16px; background:var(--glass-frame); border-radius:2px; transform:translateY(-50%); }
+  .door-panel:first-child .door-handle{ right:4px; }
+  .door-panel:last-child .door-handle{ left:4px; }
+  .lobby-base{ height:10px; width:100%; }
+
+  /* ---------- BRIDGE ---------- */
+  .bridge-wrap{
+    position:absolute; top:370px; left:50%;
+    transform:translateX(-50%);
+    width:var(--tower-gap);
+    height:78px;
+    z-index:3;
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.22));
+  }
+  .bridge-wrap::before,
+  .bridge-wrap::after{
+    content:"";
+    position:absolute;
+    top:14px;
+    width:18px;
+    height:50px;
+    background:linear-gradient(90deg, var(--t3), var(--t2));
+    border:2px solid var(--t-ledge);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);
+    z-index:-1;
+  }
+  .bridge-wrap::before{ left:-8px; }
+  .bridge-wrap::after{ right:-8px; }
+  .bridge-deck-line{ height:4px; width:100%; margin:0 0 4px; background:var(--navy-light); border-radius:3px; box-shadow:0 0 0 2px rgba(21,39,71,.2); }
+  .bridge-main{ display:flex; align-items:stretch; height:50px; border:2px solid var(--navy-light); border-radius:4px; overflow:hidden; background:var(--navy-dark); box-shadow:0 6px 12px rgba(0,0,0,.2); }
+  .bridge-socket{ width:12px; background:linear-gradient(90deg, var(--t3), var(--t2)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.24); }
+  .bridge-body{
+    flex:1; position:relative;
+    background:linear-gradient(180deg, var(--navy-light), var(--navy));
+    border-left:1px solid rgba(255,255,255,.5);
+    border-right:1px solid rgba(255,255,255,.5);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    font-size:12px; font-weight:700; line-height:1.2;
+    text-decoration:none; letter-spacing:.3px;
+    overflow:hidden;
+    transition:filter .15s ease;
+  }
+  .bridge-body::before{
+    content:"";
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(90deg, transparent 0 20px, rgba(255,255,255,.10) 20px 22px);
+  }
+  .bridge-body span{ position:relative; z-index:1; }
+  .bridge-main:hover .bridge-body{ filter:brightness(1.2); }
+  .struts{ position:relative; height:24px; width:100%; margin:0 auto; background:linear-gradient(180deg, rgba(125,136,150,.75), transparent 70%); }
+  .strut{ position:absolute; top:0; width:4px; height:24px; background:linear-gradient(180deg, #AAB5C1, #657384); }
+  .strut.left{ left:26px; transform:rotate(18deg); transform-origin:top center; }
+  .strut.right{ right:26px; transform:rotate(-18deg); transform-origin:top center; }
+
+  /* ---------- GROUND / GRASS / PATHS ---------- */
+  .ground{ position:relative; margin-top:-2px; padding-top:0; background:var(--grass); }
+  .grass-edge{
+    position:absolute; top:-9px; left:0; right:0; height:10px;
+    background:
+      repeating-linear-gradient(-60deg, var(--grass) 0 3px, transparent 3px 6px),
+      repeating-linear-gradient(60deg, var(--grass-dark) 0 3px, transparent 3px 6px);
+  }
+
+  .paths-row{
+    display:flex;
+    justify-content:center;
+    gap:var(--tower-gap);
+    height:42px;
+  }
+  .path-slot{ width:var(--tower-slot); display:flex; justify-content:center; position:relative; }
+  .path{
+    width:96px; height:42px;
+    background:var(--path);
+    clip-path:polygon(0 0, 100% 0, 78% 100%, 22% 100%);
+  }
+  .lantern{
+    position:absolute;
+    left:calc(50% + 64px);
+    bottom:0;
+    width:4px;
+    height:29px;
+    border-radius:2px;
+    background:var(--navy-dark);
+  }
+  .lantern::before{
+    content:"";
+    position:absolute;
+    left:-6px; top:-5px;
+    width:16px;
+    height:8px;
+    border:2px solid var(--navy-dark);
+    border-radius:6px 6px 3px 3px;
+    background:#F4D98A;
+    box-shadow:0 0 5px rgba(244,217,138,.35);
+  }
+  .lantern::after{
+    content:"";
+    position:absolute;
+    left:-4px; bottom:-3px;
+    width:12px; height:3px;
+    border-radius:2px;
+    background:var(--navy-dark);
+  }
+
+  .base{
+    position:relative;
+    display:flex;
+    margin:0 auto;
+    width:100%;
+    max-width:920px;
+    height:100px;
+    background:var(--green);
+    color:#fff;
+    text-decoration:none;
+    align-items:center; justify-content:center;
+    font-size:21px; font-weight:700; letter-spacing:1.5px;
+    clip-path:polygon(40px 100%, 0 42px, 40px 0, calc(100% - 40px) 0, 100% 42px, calc(100% - 40px) 100%);
+    contain:paint;
+    transition:background-color .15s ease;
+  }
+  .base:hover{ background:var(--green-hover); }
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+  <div class="towers-row">
+
+    <!-- ============ LEFT TOWER: STANDARDIZATION ============ -->
+    <div class="tower-col">
+      <div class="tower-name">STANDARDIZATION</div>
+      <div class="antenna-ball"></div>
+      <div class="antenna"></div>
+      <div class="spire-triangle"></div>
+
+      <div class="tier t3">
+        <div class="blank-cap"></div>
+      </div>
+      <div class="step-strip"></div>
+
+      <div class="tier t2">
+        <div class="window-grid cols-2">
+          <a class="window" href="HREF_CUSTOMER_DOCUMENTATION" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Customer<br>Docs</span></div>
+            <span class="tooltip">Customer Documentation</span>
+          </a>
+          <a class="window" href="HREF_CLASSIFICATION_PLM" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Classifi-<br>cation</span></div>
+            <span class="tooltip">Classification in PLM</span>
+          </a>
+          <a class="window" href="HREF_BASIC_MATERIALS_PLM" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Materials<br>PLM</span></div>
+            <span class="tooltip">Basic Materials in PLM</span>
+          </a>
+          <a class="window" href="HREF_VIVA_ENGAGE" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Viva<br>Engage</span></div>
+            <span class="tooltip">Viva Engage - S&amp;R Community and Newscenter</span>
+          </a>
+        </div>
+      </div>
+      <div class="step-strip"></div>
+
+      <div class="tier t1">
+        <div class="window-grid cols-3">
+          <a class="window" href="HREF_STANDARDS_PART_CATALOG" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Standards<br>Catalog</span></div>
+            <span class="tooltip">Standards Part Catalog</span>
+          </a>
+          <a class="window" href="HREF_NAUTOS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">NAUTOS</span></div>
+            <span class="tooltip">NAUTOS - Document Management Platform</span>
+          </a>
+          <a class="window" href="HREF_EXTERNAL_STANDARDS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">External<br>Standards</span></div>
+            <span class="tooltip">External-Standards</span>
+          </a>
+          <a class="window" href="HREF_INTERNAL_STANDARDS_NORMS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Internal<br>Standards</span></div>
+            <span class="tooltip">Internal-Standards - Norms</span>
+          </a>
+          <a class="window" href="HREF_SIEMENS_LEGACY_SN_NORMS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Siemens<br>Legacy</span></div>
+            <span class="tooltip">Siemens Legacy SN-Norms</span>
+          </a>
+          <a class="window" href="HREF_STANDARDIZATION_COMMITTEES" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Standardi-<br>zation</span></div>
+            <span class="tooltip">Standardization Committees - Voting-Mgmt</span>
+          </a>
+          <a class="window" href="HREF_TERMINOLOGY_PLM" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Terminol-<br>ogy PLM</span></div>
+            <span class="tooltip">Terminology in PLM</span>
+          </a>
+          <a class="window" href="HREF_GPS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">GPS</span></div>
+            <span class="tooltip">Geometrical Product Specifications (GPS)</span>
+          </a>
+          <a class="window" href="HREF_STANDARDS_REGULATIONS_CP_STG" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Standards<br>&amp; Regs</span></div>
+            <span class="tooltip">Standards &amp; Regulations @ CP &amp; STG</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="lobby">
+        <div class="canopy"></div>
+        <div class="lobby-glass">
+          <div class="lobby-panel"></div>
+          <div class="door">
+            <div class="door-panel"><div class="door-handle"></div></div>
+            <div class="door-panel"><div class="door-handle"></div></div>
+          </div>
+          <div class="lobby-panel"></div>
+        </div>
+        <div class="lobby-base"></div>
+      </div>
+    </div>
+
+    <!-- ============ RIGHT TOWER: TECHNICAL REGULATION ============ -->
+    <div class="tower-col">
+      <div class="tower-name">TECHNICAL<br>REGULATION</div>
+      <div class="antenna-ball"></div>
+      <div class="antenna"></div>
+      <div class="spire-triangle"></div>
+
+      <div class="tier t3">
+        <div class="window-grid cols-1">
+          <a class="window" href="HREF_ENERGY_EFFICIENCY" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Energy<br>Efficiency</span></div>
+            <span class="tooltip">Energy Efficiency</span>
+          </a>
+          <a class="window" href="HREF_PRODUCT_SAFETY" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Product<br>Safety</span></div>
+            <span class="tooltip">Product Safety</span>
+          </a>
+        </div>
+      </div>
+      <div class="step-strip"></div>
+
+      <div class="tier t2">
+        <div class="window-grid cols-2">
+          <a class="window" href="HREF_FUNCTIONAL_SAFETY" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Functional<br>Safety</span></div>
+            <span class="tooltip">Functional-Safety</span>
+          </a>
+          <a class="window" href="HREF_ENVIRONMENTAL_REGULATIONS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Environ-<br>mental</span></div>
+            <span class="tooltip">Environmental-Regulations</span>
+          </a>
+          <a class="window" href="HREF_CYBER_SECURITY" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Cyber<br>Security</span></div>
+            <span class="tooltip">Cyber-Security</span>
+          </a>
+          <a class="window" href="HREF_NETWORK_ACCESS_CODES" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Network<br>Access</span></div>
+            <span class="tooltip">Network Access Codes (Grid)</span>
+          </a>
+        </div>
+      </div>
+      <div class="step-strip"></div>
+
+      <div class="tier t1">
+        <div class="window-grid cols-3">
+          <a class="window" href="HREF_EMISSIONS_NOISE" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Emissions<br>Noise</span></div>
+            <span class="tooltip">Emissions - Noise</span>
+          </a>
+          <a class="window" href="HREF_ELECTRICAL_SAFETY" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Electrical<br>Safety</span></div>
+            <span class="tooltip">Electrical Safety</span>
+          </a>
+          <a class="window" href="HREF_WELDING" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Welding</span></div>
+            <span class="tooltip">Welding</span>
+          </a>
+          <a class="window" href="HREF_MATERIALS" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Materials</span></div>
+            <span class="tooltip">Materials</span>
+          </a>
+          <a class="window" href="HREF_EARTHQUAKE" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Earthquake</span></div>
+            <span class="tooltip">Earthquake</span>
+          </a>
+          <a class="window" href="HREF_PRESSURE_EQUIPMENT" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Pressure<br>Equipm.</span></div>
+            <span class="tooltip">Pressure Equipment</span>
+          </a>
+          <a class="window" href="HREF_EXPLOSIVE_ATMOSPHERE" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Explosive<br>Atmos.</span></div>
+            <span class="tooltip">Explosive Atmosphere</span>
+          </a>
+          <a class="window" href="HREF_DANGEROUS_SUBSTANCES" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Dangerous<br>Subst.</span></div>
+            <span class="tooltip">Dangerous Substances</span>
+          </a>
+          <a class="window" href="HREF_PERFORMANCE_TEST_CODES" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Performance<br>Tests</span></div>
+            <span class="tooltip">Performance Test Codes</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="lobby">
+        <div class="canopy"></div>
+        <div class="lobby-glass">
+          <div class="lobby-panel"></div>
+          <div class="door">
+            <div class="door-panel"><div class="door-handle"></div></div>
+            <div class="door-panel"><div class="door-handle"></div></div>
+          </div>
+          <div class="lobby-panel"></div>
+        </div>
+        <div class="lobby-base"></div>
+      </div>
+    </div>
+
+    <!-- ============ BRIDGE ============ -->
+  <div class="bridge-wrap">
+    <div class="bridge-deck-line"></div>
+    <div class="bridge-main">
+      <div class="bridge-socket"></div>
+      <a class="bridge-body" href="#"><span>Standards &amp;<br>Regulation</span></a>
+      <div class="bridge-socket"></div>
+    </div>
+    <div class="struts">
+      <div class="strut left"></div>
+      <div class="strut right"></div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- ============ GROUND: grass + paths (exactly centered on each door) ============ -->
+  <div class="ground">
+    <div class="grass-edge"></div>
+    <div class="paths-row">
+      <div class="path-slot"><div class="path"></div><div class="lantern" aria-hidden="true"></div></div>
+      <div class="path-slot"><div class="path"></div><div class="lantern" aria-hidden="true"></div></div>
+    </div>
+
+    <a class="base" href="HREF_MARKET_ACCESS" target="_blank">MARKET ACCESS</a>
+  </div>
+
+</div>
+
+</body>
+</html>
