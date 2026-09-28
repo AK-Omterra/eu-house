@@ -9,9 +9,9 @@
     --navy-light:#A96CCF;
     --navy-dark:#4A176D;
 
-    --t1:#E59EDD;
-    --t2:#D77CCF;
-    --t3:#B85DB8;
+    --t1:#C7CCD2;
+    --t2:#B7BEC6;
+    --t3:#A6AEB8;
     --t-ledge:rgba(0,0,0,.22);
 
     --glass-a:#E8D8FF;
@@ -59,9 +59,9 @@
   .tower-col > .tier{
     width:100%;
     background:
-      repeating-linear-gradient(0deg, transparent 0 18px, rgba(111,35,105,.12) 18px 20px),
+      repeating-linear-gradient(0deg, transparent 0 18px, rgba(40,48,58,.10) 18px 20px),
       repeating-linear-gradient(90deg, transparent 0 78px, rgba(255,255,255,.16) 78px 80px),
-      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(111,35,105,.08)),
+      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(40,48,58,.06)),
       var(--t1) !important;
     border-top:0;
     border-bottom:0;
@@ -138,9 +138,9 @@
     width:100%;
     padding:12px;
     background:
-      repeating-linear-gradient(0deg, transparent 0 18px, rgba(111,35,105,.12) 18px 20px),
+      repeating-linear-gradient(0deg, transparent 0 18px, rgba(40,48,58,.10) 18px 20px),
       repeating-linear-gradient(90deg, transparent 0 78px, rgba(255,255,255,.16) 78px 80px),
-      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(111,35,105,.08)),
+      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(40,48,58,.06)),
       var(--t1);
     border-top:4px solid var(--t-ledge);
     border-bottom:4px solid var(--t-ledge);
@@ -214,15 +214,12 @@
     width:8px;
     height:8px;
     border-radius:50%;
-    background:#FFD966;
-    box-shadow:0 0 0 2px rgba(255,217,102,.28), 0 0 8px 3px rgba(255,217,102,.75);
+    background:#FFF8DE;
+    box-shadow:0 0 0 2px rgba(255,248,222,.18), 0 0 7px 2px rgba(255,248,222,.48);
     opacity:0;
     transform:scale(.55);
     transition:opacity .18s ease, transform .18s ease;
     z-index:5;
-    padding:2px 7px;
-    border-radius:3px;
-    background:var(--green);
     pointer-events:none;
   }
   .window:hover::after{
@@ -261,9 +258,9 @@
   .lobby{
     width:100%;
     background:
-      repeating-linear-gradient(0deg, transparent 0 18px, rgba(111,35,105,.12) 18px 20px),
+      repeating-linear-gradient(0deg, transparent 0 18px, rgba(40,48,58,.10) 18px 20px),
       repeating-linear-gradient(90deg, transparent 0 78px, rgba(255,255,255,.16) 78px 80px),
-      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(111,35,105,.08)),
+      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(40,48,58,.06)),
       var(--t1);
     padding:10px 0 0;
     border-radius:3px 3px 0 0;
@@ -309,9 +306,9 @@
     z-index:3;
     filter:drop-shadow(0 8px 10px rgba(0,0,0,.22));
   }
-  .bridge-deck-line{ height:4px; width:100%; margin:0 0 4px; background:var(--navy-light); border-radius:3px; box-shadow:0 0 0 2px rgba(21,39,71,.2); }
+  .bridge-deck-line{ height:4px; width:100%; margin:0 0 4px; background:#858D96; border-radius:3px; box-shadow:0 0 0 2px rgba(40,48,58,.2); }
   .bridge-main{ display:flex; align-items:stretch; height:50px; border:2px solid var(--navy-light); border-radius:4px; overflow:hidden; background:var(--navy-dark); box-shadow:0 6px 12px rgba(0,0,0,.2); }
-  .bridge-socket{ width:12px; background:linear-gradient(90deg, var(--t3), var(--t2)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.24); }
+  .bridge-socket{ width:12px; background:linear-gradient(90deg, #777F88, #AAB1B8); box-shadow:inset 0 0 0 1px rgba(255,255,255,.24); }
   .bridge-body{
     flex:1; position:relative;
     background:linear-gradient(180deg, var(--navy-light), var(--navy));
@@ -346,8 +343,8 @@
     z-index:2;
     pointer-events:none;
   }
-  .road-surface{ fill:none; stroke:#68727D; stroke-width:72; stroke-linecap:round; stroke-linejoin:round; }
-  .road-edge{ fill:none; stroke:#4A5561; stroke-width:84; stroke-linecap:round; stroke-linejoin:round; }
+  .road-surface{ fill:none; stroke:#68727D; stroke-width:50; stroke-linecap:round; stroke-linejoin:round; }
+  .road-edge{ fill:none; stroke:#4A5561; stroke-width:62; stroke-linecap:round; stroke-linejoin:round; }
   .road-marking{
     fill:none;
     stroke:#E4C978;
@@ -635,9 +632,9 @@
   <!-- ============ GROUND: grass + paths (exactly centered on each door) ============ -->
   <div class="ground">
     <svg class="road-network" viewBox="0 0 1040 120" preserveAspectRatio="none" aria-label="Roads from the towers to Market Access">
-      <path class="road-edge" d="M230 0 C225 28 150 34 165 57 C185 88 355 74 520 74 M810 0 C815 28 890 34 875 57 C855 88 685 74 520 74"></path>
-      <path class="road-surface" d="M230 0 C225 28 150 34 165 57 C185 88 355 74 520 74 M810 0 C815 28 890 34 875 57 C855 88 685 74 520 74"></path>
-      <path class="road-marking" d="M230 0 C225 28 150 34 165 57 C185 88 355 74 520 74 M810 0 C815 28 890 34 875 57 C855 88 685 74 520 74"></path>
+      <path class="road-edge" d="M224 0 C219 28 134 34 149 57 C169 88 245 74 360 74 M816 0 C821 28 906 34 891 57 C871 88 795 74 680 74"></path>
+      <path class="road-surface" d="M224 0 C219 28 134 34 149 57 C169 88 245 74 360 74 M816 0 C821 28 906 34 891 57 C871 88 795 74 680 74"></path>
+      <path class="road-marking" d="M224 0 C219 28 134 34 149 57 C169 88 245 74 360 74 M816 0 C821 28 906 34 891 57 C871 88 795 74 680 74"></path>
     </svg>
 
     <a class="base" href="HREF_MARKET_ACCESS" target="_blank" aria-label="Market Access"></a>
