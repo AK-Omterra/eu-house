@@ -119,6 +119,46 @@
   }
   .roof-label{ position:relative; z-index:1; transform:translateY(5px); }
 
+  /* ---------- ROOF = klickbarer Link mit Hover-Effekt ---------- */
+  a.roof{
+    text-decoration:none;
+    cursor:pointer;
+    transform-origin:50% 100%;   /* Unterkante bleibt fix, das Dach "wächst" nur nach oben */
+    transition:transform .18s ease, filter .18s ease;
+  }
+  a.roof .roof-label{
+    transition:transform .18s ease, text-shadow .18s ease;
+  }
+  a.roof::before{
+    /* Glanzstreifen, der beim Hovern über das Dach läuft */
+    content:"";
+    position:absolute;
+    top:0; bottom:0;
+    left:-45%;
+    width:38%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    transform:skewX(-20deg);
+    opacity:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  a.roof:hover,
+  a.roof:focus-visible{
+    transform:scaleY(1.08);
+    filter:brightness(1.22) saturate(1.1);
+  }
+  a.roof:hover .roof-label,
+  a.roof:focus-visible .roof-label{
+    transform:translateY(5px) scaleY(.926);   /* gleicht die Streckung aus, Schrift bleibt unverzerrt */
+    text-shadow:0 1px 2px rgba(0,0,0,.55), 0 0 10px rgba(255,255,255,.45);
+  }
+  a.roof:hover::before,
+  a.roof:focus-visible::before{
+    opacity:1;
+    left:120%;
+    transition:left .7s ease, opacity .2s ease;
+  }
+
   .antenna{ width:2px; height:30px; background:#333; }
   .antenna-ball{ width:8px; height:8px; border-radius:50%; background:#C0392B; margin-bottom:-2px; }
   .spire-triangle{ width:0; height:0; border-left:15px solid transparent; border-right:15px solid transparent; border-bottom:38px solid var(--t3); }
@@ -337,9 +377,11 @@
   .grass-edge,.lantern{ display:none; }
   .road-network{
     position:absolute;
-    inset:0;
-    width:100%;
+    top:0;
+    left:50%;
+    width:1040px;
     height:96px;
+    transform:translateX(-50%);
     z-index:2;
     pointer-events:none;
   }
@@ -396,7 +438,7 @@
 
     <!-- ============ LEFT TOWER: STANDARDIZATION ============ -->
     <div class="tower-col">
-      <div class="roof"><span class="roof-label">STANDARDIZATION</span></div>
+      <a class="roof" href="HREF_ROOF_STANDARDIZATION" target="_blank" aria-label="Standardization"><span class="roof-label">STANDARDIZATION</span></a>
       <div class="tower-name">STANDARDIZATION</div>
       <div class="antenna-ball"></div>
       <div class="antenna"></div>
@@ -507,7 +549,7 @@
 
     <!-- ============ RIGHT TOWER: TECHNICAL REGULATION ============ -->
     <div class="tower-col">
-      <div class="roof"><span class="roof-label">TECHNICAL<br>REGULATION</span></div>
+      <a class="roof" href="HREF_ROOF_TECHNICAL_REGULATION" target="_blank" aria-label="Technical Regulation"><span class="roof-label">TECHNICAL<br>REGULATION</span></a>
       <div class="tower-name">TECHNICAL REGULATION</div>
       <div class="antenna-ball"></div>
       <div class="antenna"></div>
@@ -632,9 +674,9 @@
   <!-- ============ GROUND: grass + paths (exactly centered on each door) ============ -->
   <div class="ground">
     <svg class="road-network" viewBox="0 0 1040 120" preserveAspectRatio="none" aria-label="Roads from the towers to Market Access">
-      <path class="road-edge" d="M224 0 C219 28 134 34 149 57 C169 88 245 74 360 74 M816 0 C821 28 906 34 891 57 C871 88 795 74 680 74"></path>
-      <path class="road-surface" d="M224 0 C219 28 134 34 149 57 C169 88 245 74 360 74 M816 0 C821 28 906 34 891 57 C871 88 795 74 680 74"></path>
-      <path class="road-marking" d="M224 0 C219 28 134 34 149 57 C169 88 245 74 360 74 M816 0 C821 28 906 34 891 57 C871 88 795 74 680 74"></path>
+      <path class="road-edge" d="M285 0 C283 26 212 36 221 58 C233 84 292 74 360 74 M755 0 C757 26 828 36 819 58 C807 84 748 74 680 74"></path>
+      <path class="road-surface" d="M285 0 C283 26 212 36 221 58 C233 84 292 74 360 74 M755 0 C757 26 828 36 819 58 C807 84 748 74 680 74"></path>
+      <path class="road-marking" d="M285 0 C283 26 212 36 221 58 C233 84 292 74 360 74 M755 0 C757 26 828 36 819 58 C807 84 748 74 680 74"></path>
     </svg>
 
     <a class="base" href="HREF_MARKET_ACCESS" target="_blank" aria-label="Market Access"></a>
