@@ -5,24 +5,24 @@
 <title>Standardization & Technical Regulation Towers</title>
 <style>
   :root{
-    --navy:#1F3864;
-    --navy-light:#3A5D93;
-    --navy-dark:#152747;
+    --navy:#7030A0;
+    --navy-light:#A96CCF;
+    --navy-dark:#4A176D;
 
-    --t1:#C4CACF;
-    --t2:#9FA6AC;
-    --t3:#7A8188;
+    --t1:#E59EDD;
+    --t2:#D77CCF;
+    --t3:#B85DB8;
     --t-ledge:rgba(0,0,0,.22);
 
-    --glass-a:#B8E0F7;
-    --glass-b:#4B91C2;
-    --glass-frame:#173B5B;
+    --glass-a:#E8D8FF;
+    --glass-b:#C9A6FF;
+    --glass-frame:#4A176D;
 
-    --green:#2E7D46;
-    --green-hover:#256B3B;
+    --green:#00B050;
+    --green-hover:#008F40;
     --grass:#5FA85A;
     --grass-dark:#4A8A46;
-    --path:#D9CFB8;
+    --path:#8B9098;
 
     --win-w:84px;
     --win-h:58px;
@@ -53,7 +53,23 @@
     white-space:nowrap;
     margin-bottom:8px;
     box-shadow:0 3px 6px rgba(0,0,0,.25);
+    display:none;
   }
+  .antenna-ball,.antenna,.spire-triangle{ display:none; }
+  .tower-col > .tier{
+    width:100%;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 18px, rgba(111,35,105,.12) 18px 20px),
+      repeating-linear-gradient(90deg, transparent 0 78px, rgba(255,255,255,.16) 78px 80px),
+      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(111,35,105,.08)),
+      var(--t1) !important;
+    border-top:0;
+    border-bottom:0;
+  }
+  .tower-col > .step-strip{ display:none; }
+  .tower-col > .tier.t3:has(.blank-cap){ display:none; }
+  .tower-col > .tier.t3:has(.blank-cap) + .step-strip + .tier{ border-top:4px solid var(--t-ledge); }
+  .tower-col .cols-2{ grid-template-columns:repeat(3, var(--win-w)); }
 
   .towers-row{
     display:flex;
@@ -68,7 +84,40 @@
     display:flex;
     flex-direction:column;
     align-items:center;
+    position:relative;
   }
+  .tower-col:first-child{ order:2; }
+  .tower-col:last-child{ order:1; }
+
+  .roof{
+    width:100%;
+    height:62px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 16px, rgba(255,255,255,.12) 16px 18px),
+      linear-gradient(135deg, #A96CCF, #7030A0 58%, #4A176D);
+    border:3px solid var(--t-ledge);
+    border-bottom:0;
+    clip-path:polygon(0 100%, 50% 0, 100% 100%);
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.4px;
+    text-align:center;
+    text-shadow:0 1px 2px rgba(0,0,0,.45);
+    overflow:hidden;
+  }
+  .roof::after{
+    content:"";
+    position:absolute;
+    inset:20px 12px 4px;
+    opacity:.26;
+    background:repeating-linear-gradient(135deg, transparent 0 14px, rgba(255,255,255,.5) 14px 16px, transparent 16px 29px);
+  }
+  .roof-label{ position:relative; z-index:1; transform:translateY(5px); }
 
   .antenna{ width:2px; height:30px; background:#333; }
   .antenna-ball{ width:8px; height:8px; border-radius:50%; background:#C0392B; margin-bottom:-2px; }
@@ -85,6 +134,18 @@
   .tier.t1{ background:var(--t1); }
   .tier.t2{ background:var(--t2); }
   .tier.t3{ background:var(--t3); }
+  .floor{
+    width:100%;
+    padding:12px;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 18px, rgba(111,35,105,.12) 18px 20px),
+      repeating-linear-gradient(90deg, transparent 0 78px, rgba(255,255,255,.16) 78px 80px),
+      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(111,35,105,.08)),
+      var(--t1);
+    border-top:4px solid var(--t-ledge);
+    border-bottom:4px solid var(--t-ledge);
+  }
+  .floor .window-body::after{ opacity:.18; }
 
   .window-grid{ display:grid; gap:7px; }
   .cols-3{ grid-template-columns:repeat(3, var(--win-w)); }
@@ -111,7 +172,9 @@
     align-items:center;
     justify-content:center;
     padding:2px 3px;
-    background:linear-gradient(160deg, var(--glass-a), var(--glass-b));
+    background:
+      linear-gradient(120deg, rgba(255,255,255,.55) 0 12%, transparent 13% 65%, rgba(255,255,255,.18) 66% 72%, transparent 73%),
+      linear-gradient(160deg, var(--glass-a), var(--glass-b) 65%, #9D70E8);
     overflow:hidden;
   }
   .window-body::before{
@@ -142,6 +205,29 @@
     transform:translateY(-5px) scale(1.07);
     box-shadow:0 10px 18px rgba(0,0,0,.3);
     z-index:4;
+  }
+  .window::after{
+    content:"";
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#FFD966;
+    box-shadow:0 0 0 2px rgba(255,217,102,.28), 0 0 8px 3px rgba(255,217,102,.75);
+    opacity:0;
+    transform:scale(.55);
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:5;
+    padding:2px 7px;
+    border-radius:3px;
+    background:var(--green);
+    pointer-events:none;
+  }
+  .window:hover::after{
+    opacity:1;
+    transform:scale(1);
   }
 
   .blank-cap{
@@ -174,7 +260,11 @@
   /* ---------- GROUND-FLOOR LOBBY (widest part of the tower) ---------- */
   .lobby{
     width:100%;
-    background:var(--t1);
+    background:
+      repeating-linear-gradient(0deg, transparent 0 18px, rgba(111,35,105,.12) 18px 20px),
+      repeating-linear-gradient(90deg, transparent 0 78px, rgba(255,255,255,.16) 78px 80px),
+      linear-gradient(135deg, rgba(255,255,255,.22), transparent 34%, rgba(111,35,105,.08)),
+      var(--t1);
     padding:10px 0 0;
     border-radius:3px 3px 0 0;
     position:relative;
@@ -212,27 +302,13 @@
 
   /* ---------- BRIDGE ---------- */
   .bridge-wrap{
-    position:absolute; top:370px; left:50%;
+    position:absolute; top:300px; left:50%;
     transform:translateX(-50%);
     width:var(--tower-gap);
     height:78px;
     z-index:3;
     filter:drop-shadow(0 8px 10px rgba(0,0,0,.22));
   }
-  .bridge-wrap::before,
-  .bridge-wrap::after{
-    content:"";
-    position:absolute;
-    top:14px;
-    width:18px;
-    height:50px;
-    background:linear-gradient(90deg, var(--t3), var(--t2));
-    border:2px solid var(--t-ledge);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);
-    z-index:-1;
-  }
-  .bridge-wrap::before{ left:-8px; }
-  .bridge-wrap::after{ right:-8px; }
   .bridge-deck-line{ height:4px; width:100%; margin:0 0 4px; background:var(--navy-light); border-radius:3px; box-shadow:0 0 0 2px rgba(21,39,71,.2); }
   .bridge-main{ display:flex; align-items:stretch; height:50px; border:2px solid var(--navy-light); border-radius:4px; overflow:hidden; background:var(--navy-dark); box-shadow:0 6px 12px rgba(0,0,0,.2); }
   .bridge-socket{ width:12px; background:linear-gradient(90deg, var(--t3), var(--t2)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.24); }
@@ -256,76 +332,61 @@
   }
   .bridge-body span{ position:relative; z-index:1; }
   .bridge-main:hover .bridge-body{ filter:brightness(1.2); }
-  .struts{ position:relative; height:24px; width:100%; margin:0 auto; background:linear-gradient(180deg, rgba(125,136,150,.75), transparent 70%); }
-  .strut{ position:absolute; top:0; width:4px; height:24px; background:linear-gradient(180deg, #AAB5C1, #657384); }
-  .strut.left{ left:26px; transform:rotate(18deg); transform-origin:top center; }
-  .strut.right{ right:26px; transform:rotate(-18deg); transform-origin:top center; }
+  .struts{ height:0; width:100%; }
+  .strut{ display:none; }
 
-  /* ---------- GROUND / GRASS / PATHS ---------- */
-  .ground{ position:relative; margin-top:-2px; padding-top:0; background:var(--grass); }
-  .grass-edge{
-    position:absolute; top:-9px; left:0; right:0; height:10px;
-    background:
-      repeating-linear-gradient(-60deg, var(--grass) 0 3px, transparent 3px 6px),
-      repeating-linear-gradient(60deg, var(--grass-dark) 0 3px, transparent 3px 6px);
-  }
-
-  .paths-row{
-    display:flex;
-    justify-content:center;
-    gap:var(--tower-gap);
-    height:42px;
-  }
-  .path-slot{ width:var(--tower-slot); display:flex; justify-content:center; position:relative; }
-  .path{
-    width:96px; height:42px;
-    background:var(--path);
-    clip-path:polygon(0 0, 100% 0, 78% 100%, 22% 100%);
-  }
-  .lantern{
+  /* ---------- ROADS / MARKET ACCESS ---------- */
+  .ground{ position:relative; margin-top:-2px; padding-top:0; height:96px; background:transparent; }
+  .grass-edge,.lantern{ display:none; }
+  .road-network{
     position:absolute;
-    left:calc(50% + 64px);
-    bottom:0;
-    width:4px;
-    height:29px;
-    border-radius:2px;
-    background:var(--navy-dark);
+    inset:0;
+    width:100%;
+    height:96px;
+    z-index:2;
+    pointer-events:none;
   }
-  .lantern::before{
-    content:"";
-    position:absolute;
-    left:-6px; top:-5px;
-    width:16px;
-    height:8px;
-    border:2px solid var(--navy-dark);
-    border-radius:6px 6px 3px 3px;
-    background:#F4D98A;
-    box-shadow:0 0 5px rgba(244,217,138,.35);
-  }
-  .lantern::after{
-    content:"";
-    position:absolute;
-    left:-4px; bottom:-3px;
-    width:12px; height:3px;
-    border-radius:2px;
-    background:var(--navy-dark);
+  .road-surface{ fill:none; stroke:#68727D; stroke-width:72; stroke-linecap:round; stroke-linejoin:round; }
+  .road-edge{ fill:none; stroke:#4A5561; stroke-width:84; stroke-linecap:round; stroke-linejoin:round; }
+  .road-marking{
+    fill:none;
+    stroke:#E4C978;
+    stroke-width:3;
+    stroke-dasharray:10 10;
+    stroke-linecap:round;
   }
 
   .base{
     position:relative;
     display:flex;
     margin:0 auto;
-    width:100%;
-    max-width:920px;
-    height:100px;
+    width:calc((var(--tower-slot) * 2) + var(--tower-gap));
+    max-width:none;
+    height:96px;
     background:var(--green);
     color:#fff;
     text-decoration:none;
-    align-items:center; justify-content:center;
+    align-items:flex-end; justify-content:center;
+    padding-bottom:18px;
     font-size:21px; font-weight:700; letter-spacing:1.5px;
-    clip-path:polygon(40px 100%, 0 42px, 40px 0, calc(100% - 40px) 0, 100% 42px, calc(100% - 40px) 100%);
+    clip-path:polygon(30px 0, calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 30px 100%, 0 50%);
     contain:paint;
     transition:background-color .15s ease;
+    z-index:1;
+  }
+  .market-label{
+    position:absolute;
+    left:50%;
+    bottom:34px;
+    transform:translateX(-50%);
+    z-index:3;
+    color:#fff;
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    white-space:nowrap;
+    text-shadow:0 1px 3px rgba(0,0,0,.65), 0 0 3px var(--green);
+    pointer-events:none;
   }
   .base:hover{ background:var(--green-hover); }
 </style>
@@ -338,6 +399,7 @@
 
     <!-- ============ LEFT TOWER: STANDARDIZATION ============ -->
     <div class="tower-col">
+      <div class="roof"><span class="roof-label">STANDARDIZATION</span></div>
       <div class="tower-name">STANDARDIZATION</div>
       <div class="antenna-ball"></div>
       <div class="antenna"></div>
@@ -360,16 +422,24 @@
             <div class="window-body"><span class="window-label">Classifi-<br>cation</span></div>
             <span class="tooltip">Classification in PLM</span>
           </a>
-          <a class="window" href="HREF_BASIC_MATERIALS_PLM" target="_blank">
+          <div class="window" aria-hidden="true">
             <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">Materials<br>PLM</span></div>
-            <span class="tooltip">Basic Materials in PLM</span>
-          </a>
+            <div class="window-body"><span class="window-label">YOUR<br>IDEA</span></div>
+          </div>
           <a class="window" href="HREF_VIVA_ENGAGE" target="_blank">
             <div class="window-header"></div>
             <div class="window-body"><span class="window-label">Viva<br>Engage</span></div>
             <span class="tooltip">Viva Engage - S&amp;R Community and Newscenter</span>
           </a>
+          <a class="window" href="HREF_BASIC_MATERIALS_PLM" target="_blank">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">Materials<br>PLM</span></div>
+            <span class="tooltip">Basic Materials in PLM</span>
+          </a>
+          <div class="window" aria-hidden="true">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">YOUR<br>IDEA</span></div>
+          </div>
         </div>
       </div>
       <div class="step-strip"></div>
@@ -440,13 +510,14 @@
 
     <!-- ============ RIGHT TOWER: TECHNICAL REGULATION ============ -->
     <div class="tower-col">
-      <div class="tower-name">TECHNICAL<br>REGULATION</div>
+      <div class="roof"><span class="roof-label">TECHNICAL<br>REGULATION</span></div>
+      <div class="tower-name">TECHNICAL REGULATION</div>
       <div class="antenna-ball"></div>
       <div class="antenna"></div>
       <div class="spire-triangle"></div>
 
-      <div class="tier t3">
-        <div class="window-grid cols-1">
+      <div class="tier t2">
+        <div class="window-grid cols-2">
           <a class="window" href="HREF_ENERGY_EFFICIENCY" target="_blank">
             <div class="window-header"></div>
             <div class="window-body"><span class="window-label">Energy<br>Efficiency</span></div>
@@ -457,12 +528,6 @@
             <div class="window-body"><span class="window-label">Product<br>Safety</span></div>
             <span class="tooltip">Product Safety</span>
           </a>
-        </div>
-      </div>
-      <div class="step-strip"></div>
-
-      <div class="tier t2">
-        <div class="window-grid cols-2">
           <a class="window" href="HREF_FUNCTIONAL_SAFETY" target="_blank">
             <div class="window-header"></div>
             <div class="window-body"><span class="window-label">Functional<br>Safety</span></div>
@@ -556,7 +621,7 @@
     <div class="bridge-deck-line"></div>
     <div class="bridge-main">
       <div class="bridge-socket"></div>
-      <a class="bridge-body" href="#"><span>Standards &amp;<br>Regulation</span></a>
+      <a class="bridge-body" href="#"><span>TR&amp;S Expert<br>Network</span></a>
       <div class="bridge-socket"></div>
     </div>
     <div class="struts">
@@ -569,13 +634,14 @@
 
   <!-- ============ GROUND: grass + paths (exactly centered on each door) ============ -->
   <div class="ground">
-    <div class="grass-edge"></div>
-    <div class="paths-row">
-      <div class="path-slot"><div class="path"></div><div class="lantern" aria-hidden="true"></div></div>
-      <div class="path-slot"><div class="path"></div><div class="lantern" aria-hidden="true"></div></div>
-    </div>
+    <svg class="road-network" viewBox="0 0 1040 120" preserveAspectRatio="none" aria-label="Roads from the towers to Market Access">
+      <path class="road-edge" d="M230 0 C225 28 150 34 165 57 C185 88 355 74 520 74 M810 0 C815 28 890 34 875 57 C855 88 685 74 520 74"></path>
+      <path class="road-surface" d="M230 0 C225 28 150 34 165 57 C185 88 355 74 520 74 M810 0 C815 28 890 34 875 57 C855 88 685 74 520 74"></path>
+      <path class="road-marking" d="M230 0 C225 28 150 34 165 57 C185 88 355 74 520 74 M810 0 C815 28 890 34 875 57 C855 88 685 74 520 74"></path>
+    </svg>
 
-    <a class="base" href="HREF_MARKET_ACCESS" target="_blank">MARKET ACCESS</a>
+    <a class="base" href="HREF_MARKET_ACCESS" target="_blank" aria-label="Market Access"></a>
+    <span class="market-label" aria-hidden="true">MARKET ACCESS</span>
   </div>
 
 </div>
