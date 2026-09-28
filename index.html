@@ -428,6 +428,21 @@
     pointer-events:none;
   }
   .base:hover{ background:var(--green-hover); }
+
+  /* ---------- MARKET ACCESS ROAD HOVER ANIMATION ---------- */
+  .road-network .road-marking{
+    stroke-dasharray:10 10;
+    stroke-dashoffset:0;
+    opacity:1;
+    transition:opacity .2s ease;
+  }
+  .ground:has(.base:hover) .road-network .road-marking{
+    animation:roadToMarket 2.2s linear infinite;
+  }
+  @keyframes roadToMarket{
+    from{stroke-dashoffset:0;}
+    to{stroke-dashoffset:-80;}
+  }
 </style>
 </head>
 <body>
@@ -453,7 +468,7 @@
         <div class="window-grid cols-2">
           <a class="window" href="HREF_CUSTOMER_DOCUMENTATION" target="_blank">
             <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">Customer<br>Docs</span></div>
+            <div class="window-body"><span class="window-label">Customer<br>Docu</span></div>
             <span class="tooltip">Customer Documentation</span>
           </a>
           <a class="window" href="HREF_CLASSIFICATION_PLM" target="_blank">
@@ -463,21 +478,20 @@
           </a>
           <div class="window" aria-hidden="true">
             <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">YOUR<br>IDEA</span></div>
+            <div class="window-body"><span class="window-label">NEW<br>TOPIC</span></div>
           </div>
           <a class="window" href="HREF_VIVA_ENGAGE" target="_blank">
             <div class="window-header"></div>
             <div class="window-body"><span class="window-label">Viva<br>Engage</span></div>
             <span class="tooltip">Viva Engage - S&amp;R Community and Newscenter</span>
           </a>
-          <a class="window" href="HREF_BASIC_MATERIALS_PLM" target="_blank">
-            <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">Materials<br>PLM</span></div>
-            <span class="tooltip">Basic Materials in PLM</span>
-          </a>
           <div class="window" aria-hidden="true">
             <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">YOUR<br>IDEA</span></div>
+            <div class="window-body"><span class="window-label">NEW<br>TOPIC</span></div>
+          </div>
+          <div class="window" aria-hidden="true">
+            <div class="window-header"></div>
+            <div class="window-body"><span class="window-label">NEW<br>TOPIC</span></div>
           </div>
         </div>
       </div>
@@ -522,13 +536,13 @@
           </a>
           <a class="window" href="HREF_GPS" target="_blank">
             <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">GPS</span></div>
+            <div class="window-body"><span class="window-label">Geometrical<br>Specifications</span></div>
             <span class="tooltip">Geometrical Product Specifications (GPS)</span>
           </a>
           <a class="window" href="HREF_STANDARDS_REGULATIONS_CP_STG" target="_blank">
             <div class="window-header"></div>
-            <div class="window-body"><span class="window-label">Standards<br>&amp; Regs</span></div>
-            <span class="tooltip">Standards &amp; Regulations @ CP &amp; STG</span>
+            <div class="window-body"><span class="window-label">PLM<br>Material</span></div>
+            <span class="tooltip">PLM Material</span>
           </a>
         </div>
       </div>
